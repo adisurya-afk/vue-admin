@@ -82,8 +82,8 @@
     "url": "https://github.com/PanJiaChen/vue-admin/issues"
   },
   "engines": {
-    "node": ">=8.9",
-    "npm": ">= 3.0.0"
+    "node": "16.13.1",
+    "npm": "9.3.1"
   },
   "keywords": [
     "vue",
