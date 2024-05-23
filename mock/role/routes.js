@@ -81,33 +81,42 @@ const asyncRoutes = [
     meta: {
       title: 'Permission',
       icon: 'lock',
-      roles: ['admin', 'editor']
+      roles: ['admin']
     },
     children: [
+      // {
+      //   path: 'page',
+      //   component: 'views/permission/page',
+      //   name: '5',
+      //   meta: {
+      //     title: 'Page Permission',
+      //     roles: ['admin']
+      //   }
+      // },
+      // {
+      //   path: 'directive',
+      //   component: 'views/permission/directive',
+      //   name: 'DirectivePermission',
+      //   meta: {
+      //     title: 'Directive Permission'
+      //   }
+      // },
+      // {
+      //   path: 'role',
+      //   component: 'views/permission/role',
+      //   name: 'RolePermission',
+      //   meta: {
+      //     title: 'Role Permission',
+      //     roles: ['admin']
+      //   }
+      // },
       {
-        path: 'page',
-        component: 'views/permission/page',
-        name: 'PagePermission',
+        path: 'admin',
+        component: 'views/permission/admin',
+        name: 'AdminPage',
         meta: {
-          title: 'Page Permission',
-          roles: ['admin']
-        }
-      },
-      {
-        path: 'directive',
-        component: 'views/permission/directive',
-        name: 'DirectivePermission',
-        meta: {
-          title: 'Directive Permission'
-        }
-      },
-      {
-        path: 'role',
-        component: 'views/permission/role',
-        name: 'RolePermission',
-        meta: {
-          title: 'Role Permission',
-          roles: ['admin']
+          title: 'Admin Page',
+          roles: ['super_admin']
         }
       }
     ]

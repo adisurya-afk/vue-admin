@@ -34,3 +34,11 @@ export function deleteItem(id) {
     method: 'delete'
   })
 }
+
+export function getTotalItems(query) {
+  return request({
+    baseURL: process.env.VUE_APP_BASE_API_TRANSACTION,
+    url: '/items/total',
+    method: 'get'
+  })
+}

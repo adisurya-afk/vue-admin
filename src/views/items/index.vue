@@ -2,8 +2,8 @@
   <div class="app-container">
     <div class="filter-container">
       <el-input
-        v-model="listQuery.title"
-        placeholder="Title"
+        v-model="listQuery.name"
+        placeholder="Item Name"
         style="width: 200px"
         class="filter-item"
         @keyup.enter.native="handleFilter"
@@ -59,7 +59,6 @@
       fit
       highlight-current-row
       style="width: 100%"
-      @sort-change="sortChange"
     >
       <el-table-column
         label="ID"
@@ -67,7 +66,6 @@
         sortable="custom"
         align="center"
         width="80"
-        :class-name="getSortClass('id')"
       >
         <template slot-scope="{ row }">
           <span>{{ row.id }}</span>
@@ -193,14 +191,14 @@ export default {
         page: 1,
         limit: 20,
         importance: undefined,
-        title: undefined,
+        name: undefined,
         type: undefined,
-        sort: '+id'
+        sort: 'desc'
       },
       importanceOptions: [1, 2, 3],
       sortOptions: [
-        { label: 'ID Ascending', key: '+id' },
-        { label: 'ID Descending', key: '-id' }
+        { label: 'Date Ascending', key: 'asc' },
+        { label: 'Date Descending', key: 'desc' }
       ],
       statusOptions: ['published', 'draft', 'deleted'],
       temp: {
@@ -249,20 +247,6 @@ export default {
         type: 'success'
       })
       row.status = status
-    },
-    sortChange(data) {
-      const { prop, order } = data
-      if (prop === 'id') {
-        this.sortByID(order)
-      }
-    },
-    sortByID(order) {
-      if (order === 'ascending') {
-        this.listQuery.sort = '+id'
-      } else {
-        this.listQuery.sort = '-id'
-      }
-      this.handleFilter()
     },
     resetTemp() {
       this.temp = {
@@ -355,10 +339,6 @@ export default {
           }
         })
       )
-    },
-    getSortClass: function(key) {
-      const sort = this.listQuery.sort
-      return sort === `+${key}` ? 'ascending' : 'descending'
     },
     formatDateTime(dateTime) {
       return toDateTime(dateTime)

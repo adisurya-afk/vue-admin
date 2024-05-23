@@ -2,25 +2,12 @@
   <div class="app-container">
     <div class="filter-container">
       <el-input
-        v-model="listQuery.name"
-        placeholder="Item Name"
+        v-model="listQuery.username"
+        placeholder="Username"
         style="width: 200px"
         class="filter-item"
         @keyup.enter.native="handleFilter"
       />
-      <el-select
-        v-model="listQuery.sort"
-        style="width: 140px"
-        class="filter-item"
-        @change="handleFilter"
-      >
-        <el-option
-          v-for="item in sortOptions"
-          :key="item.key"
-          :label="item.label"
-          :value="item.key"
-        />
-      </el-select>
       <el-button
         v-waves
         class="filter-item"
@@ -38,16 +25,6 @@
         @click="handleCreate"
       >
         Add
-      </el-button>
-      <el-button
-        v-waves
-        :loading="downloadLoading"
-        class="filter-item"
-        type="primary"
-        icon="el-icon-download"
-        @click="handleDownload"
-      >
-        Export
       </el-button>
     </div>
 
@@ -71,24 +48,19 @@
           <span>{{ row.id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Item Name" align="center">
+      <el-table-column label="Username" align="center">
         <template slot-scope="{ row }">
-          <span>{{ row.items_name }}</span>
+          <span>{{ row.username }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Type" align="center">
+      <el-table-column label="Created At" align="center">
         <template slot-scope="{ row }">
-          <span>{{ row.type }}</span>
+          <span>{{ formatDateTime(row.created_at) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Total" align="center">
+      <el-table-column label="Updated At" align="center">
         <template slot-scope="{ row }">
-          <span>{{ row.total }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="Date" align="center">
-        <template slot-scope="{ row }">
-          <span>{{ formatDateTime(row.date) }}</span>
+          <span>{{ formatDateTime(row.updated_at) }}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -98,6 +70,9 @@
         class-name="small-padding fixed-width"
       >
         <template slot-scope="{ row, $index }">
+          <el-button type="primary" size="mini" @click="handleUpdate(row)">
+            Edit
+          </el-button>
           <el-button
             v-if="row.status != 'deleted'"
             size="mini"
@@ -127,28 +102,18 @@
         label-width="70px"
         style="width: 400px; margin-left: 50px"
       >
-        <el-form-item label="Item" prop="items_id">
-          <el-select v-model="temp.items_id" class="filter-item" placeholder="Please select">
-            <el-option v-for="item in listItem" :key="item.id" :label="item.name" :value="item.id" />
-          </el-select>
+        <el-form-item label="Username" prop="username">
+          <el-input v-model="temp.username" />
         </el-form-item>
-        <el-form-item label="Date" prop="date">
-          <el-date-picker v-model="temp.date" type="datetime" placeholder="Please pick a date" />
-        </el-form-item>
-        <el-form-item label="Type" prop="type">
-          <el-select v-model="temp.type" class="filter-item" placeholder="Please select">
-            <el-option v-for="item in typeOptions" :key="item.key" :label="item.name" :value="item.key" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="Total" prop="total">
-          <el-input-number v-model="temp.total" :min="1" :max="999" />
+        <el-form-item label="Password" prop="password">
+          <el-input v-model="temp.password" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false"> Cancel </el-button>
         <el-button
           type="primary"
-          @click="createData()"
+          @click="dialogStatus === 'create' ? createData() : updateData()"
         >
           Confirm
         </el-button>
@@ -177,19 +142,13 @@
 </template>
 
 <script>
-import { fetchList, createTransaction, deleteTransaction } from '@/api/transaction'
-import { fetchList as fListItem } from '@/api/item'
+import { getUsers, createUsers, updateUsers, deleteUsers } from '@/api/user'
 import waves from '@/directive/waves' // waves directive
 import { toDateTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
-const typeOptions = [
-  { key: 'IN', name: 'IN' },
-  { key: 'OUT', name: 'OUT' }
-]
-
 export default {
-  name: 'TransactionTable',
+  name: 'AdminPage',
   components: { Pagination },
   directives: { waves },
   filters: {
@@ -204,17 +163,16 @@ export default {
   },
   data() {
     return {
-      typeOptions,
       tableKey: 0,
       list: null,
-      listItem: null,
       total: 0,
       listLoading: true,
       listQuery: {
         page: 1,
         limit: 20,
         importance: undefined,
-        name: undefined,
+        username: undefined,
+        password: undefined,
         type: undefined,
         sort: 'desc'
       },
@@ -226,13 +184,8 @@ export default {
       statusOptions: ['published', 'draft', 'deleted'],
       temp: {
         id: undefined,
-        items_id: undefined,
-        users_id: this.$store.getters.userID,
-        items_name: '',
-        type: '',
-        total: 0,
-        date: new Date()
-
+        username: '',
+        password: ''
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -243,20 +196,8 @@ export default {
       dialogPvVisible: false,
       pvData: [],
       rules: {
-        items_id: [
-          { required: true, message: 'items name is required', trigger: 'change' }
-        ],
-        users_id: [
-          { required: true, message: 'user is required', trigger: 'blur' }
-        ],
-        type: [
-          { required: true, message: 'type is required', trigger: 'change' }
-        ],
-        total: [
-          { required: true, message: 'total is required', trigger: 'blur' }
-        ],
-        date: [
-          { required: true, message: 'date is required', trigger: 'change' }
+        username: [
+          { required: true, message: 'username is required', trigger: 'blur' }
         ]
       },
       downloadLoading: false
@@ -264,25 +205,15 @@ export default {
   },
   created() {
     this.getList()
-    this.getItemList()
   },
   methods: {
     getList() {
       this.listLoading = true
-      fetchList(this.listQuery).then((response) => {
+      getUsers(this.listQuery).then((response) => {
         this.list = response.data
         this.total = 0 // response.data.total
 
         // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false
-        }, 1.5 * 1000)
-      })
-    },
-    getItemList() {
-      this.listLoading = true
-      fListItem(null).then((response) => {
-        this.listItem = response.data
         setTimeout(() => {
           this.listLoading = false
         }, 1.5 * 1000)
@@ -302,11 +233,7 @@ export default {
     resetTemp() {
       this.temp = {
         id: undefined,
-        items_id: undefined,
-        users_id: this.$store.getters.userID,
-        type: '',
-        total: 0,
-        date: new Date()
+        name: ''
       }
     },
     handleCreate() {
@@ -320,7 +247,7 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          createTransaction(this.temp).then(() => {
+          createUsers(this.temp).then(() => {
             this.dialogFormVisible = false
             this.$notify({
               title: 'Success',
@@ -333,8 +260,33 @@ export default {
         }
       })
     },
+    handleUpdate(row) {
+      this.temp = Object.assign({}, row) // copy obj
+      this.dialogStatus = 'update'
+      this.dialogFormVisible = true
+      this.$nextTick(() => {
+        this.$refs['dataForm'].clearValidate()
+      })
+    },
+    updateData() {
+      this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
+          updateUsers(this.temp.id, this.temp).then(() => {
+            const index = this.list.findIndex(v => v.id === this.temp.id)
+            this.list.splice(index, 1, this.temp)
+            this.dialogFormVisible = false
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          })
+        }
+      })
+    },
     handleDelete(row, index) {
-      deleteTransaction(row.id).then(() => {
+      deleteUsers(row.id).then(() => {
         this.list.splice(index, 1)
         this.$notify({
           title: 'Success',
@@ -342,21 +294,6 @@ export default {
           type: 'success',
           duration: 2000
         })
-      })
-    },
-    handleDownload() {
-      this.downloadLoading = true
-      import('@/vendor/Export2Excel').then((excel) => {
-        const tHeader = ['id', 'name', 'created_at', 'updated_at']
-        const filterVal = ['id', 'name', 'created_at', 'updated_at']
-        const data = this.formatJson(filterVal)
-        const date = new Date()
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: `items-${date}`
-        })
-        this.downloadLoading = false
       })
     },
     formatJson(filterVal) {

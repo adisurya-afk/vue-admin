@@ -32,9 +32,7 @@ export default {
     }
   },
   mounted() {
-    this.$nextTick(() => {
-      this.initChart()
-    })
+    this.initChart()
   },
   beforeDestroy() {
     if (!this.chart) {
@@ -65,7 +63,7 @@ export default {
           },
           xAxis: [{
             type: 'category',
-            data: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            data: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
             axisTick: {
               alignWithLabel: true
             }
