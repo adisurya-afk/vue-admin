@@ -5,6 +5,9 @@
 
     <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
       <el-col>
+        <export-report />
+      </el-col>
+      <el-col>
         <div class="chart-wrapper">
           <bar-chart />
         </div>
@@ -23,6 +26,7 @@ import BarChart from './components/BarChart'
 // import TransactionTable from './components/TransactionTable'
 // import TodoList from './components/TodoList'
 // import BoxCard from './components/BoxCard'
+import ExportReport from './components/ExportReport'
 
 export default {
   name: 'DashboardAdmin',
@@ -32,7 +36,8 @@ export default {
     // LineChart,
     // RaddarChart,
     // PieChart,
-    BarChart
+    BarChart,
+    ExportReport
     // TransactionTable,
     // TodoList,
     // BoxCard

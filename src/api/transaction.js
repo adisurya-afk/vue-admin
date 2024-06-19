@@ -42,3 +42,11 @@ export function getGraphicTransaction(id) {
     method: 'get'
   })
 }
+
+export function getGraphicSpecificTransaction(id, type) {
+  return request({
+    baseURL: process.env.VUE_APP_BASE_API_TRANSACTION,
+    url: `/transactions/graphic-specific/${id}/${type}`,
+    method: 'get'
+  })
+}

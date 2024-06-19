@@ -375,11 +375,16 @@ export const asyncRoutes = [
   //     }
   //   ]
   // },
-  // {
-  //   path: '/pdf/download',
-  //   component: () => import('@/views/pdf/download'),
-  //   hidden: true
-  // },
+  {
+    path: '/pdf/download',
+    component: () => import('@/views/pdf/download'),
+    hidden: true
+  },
+  {
+    path: '/pdf/export-report/:id(\\d+)',
+    component: () => import('@/views/dashboard/admin/components/ContentReport'),
+    hidden: true
+  },
 
   // {
   //   path: '/theme',
