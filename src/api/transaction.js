@@ -50,3 +50,11 @@ export function getGraphicSpecificTransaction(id, type) {
     method: 'get'
   })
 }
+
+export function getReportTransaction(m, y) {
+  return request({
+    baseURL: process.env.VUE_APP_BASE_API_TRANSACTION,
+    url: `/transactions/monthly-report/${m}/${y}`,
+    method: 'get'
+  })
+}

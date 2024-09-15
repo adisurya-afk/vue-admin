@@ -221,7 +221,7 @@ export function getExport(years, dataIn, dataOut) {
             <p class="c5"><span class="c6"></span></p>
             <p class="c10">
             <span class="c1"
-                >Laporan keluar masuk item Galon PT Bla Bla Bla pada tahun ${years} sebagai
+                >Laporan keluar masuk item PT BINTANG SIDORAYA pada tahun ${years} sebagai
                 berikut :</span
             >
             </p>

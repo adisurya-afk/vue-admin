@@ -385,6 +385,11 @@ export const asyncRoutes = [
     component: () => import('@/views/dashboard/admin/components/ContentReport'),
     hidden: true
   },
+  {
+    path: '/pdf/export-report-tx/:month(\\d+)/:years(\\d+)',
+    component: () => import('@/views/transactions/ContentReport'),
+    hidden: true
+  },
 
   // {
   //   path: '/theme',

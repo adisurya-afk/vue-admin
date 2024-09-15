@@ -39,16 +39,43 @@
       >
         Add
       </el-button>
-      <el-button
-        v-waves
-        :loading="downloadLoading"
+      <el-select
+        v-model="listQuery.monthSelected"
+        style="margin-left: 10px; width: 140px"
         class="filter-item"
-        type="primary"
-        icon="el-icon-download"
-        @click="handleDownload"
+        @change="handleFilter"
       >
-        Export
-      </el-button>
+        <el-option
+          v-for="item in monthOptions"
+          :key="item.key"
+          :label="item.label"
+          :value="item.key"
+        />
+      </el-select>
+      <el-select
+        v-model="listQuery.yearSelected"
+        style="margin-left: 10px; width: 140px"
+        class="filter-item"
+        @change="handleFilter"
+      >
+        <el-option
+          v-for="item in yearOptions"
+          :key="item.key"
+          :label="item.label"
+          :value="item.key"
+        />
+      </el-select>
+      <router-link target="_blank" :to="'/pdf/export-report-tx/'+listQuery.monthSelected+'/'+listQuery.yearSelected">
+        <el-button
+          v-waves
+          class="filter-item"
+          type="primary"
+          icon="el-icon-download"
+          style="margin-left: 10px"
+        >
+          Export
+        </el-button>
+      </router-link>
     </div>
 
     <el-table
@@ -216,12 +243,34 @@ export default {
         importance: undefined,
         name: undefined,
         type: undefined,
-        sort: 'desc'
+        sort: 'desc',
+        monthSelected: '01',
+        yearSelected: 2024
       },
       importanceOptions: [1, 2, 3],
       sortOptions: [
         { label: 'Date Ascending', key: 'asc' },
         { label: 'Date Descending', key: 'desc' }
+      ],
+      monthOptions: [
+        { label: 'Januari', key: '01' },
+        { label: 'Februari', key: '02' },
+        { label: 'Maret', key: '03' },
+        { label: 'April', key: '04' },
+        { label: 'Mei', key: '05' },
+        { label: 'Juni', key: '06' },
+        { label: 'Juli', key: '07' },
+        { label: 'Agustus', key: '08' },
+        { label: 'September', key: '09' },
+        { label: 'Oktober', key: '10' },
+        { label: 'November', key: '11' },
+        { label: 'Desember', key: '12' }
+      ],
+      yearOptions: [
+        { label: '2023', key: 2023 },
+        { label: '2024', key: 2024 },
+        { label: '2025', key: 2025 },
+        { label: '2026', key: 2026 }
       ],
       statusOptions: ['published', 'draft', 'deleted'],
       temp: {
