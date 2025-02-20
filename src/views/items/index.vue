@@ -67,6 +67,11 @@
           <span>{{ row.name }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="Created by" align="center">
+        <template slot-scope="{ row }">
+          <span>{{ row.created_by }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="Created At" align="center">
         <template slot-scope="{ row }">
           <span>{{ formatDateTime(row.created_at) }}</span>
@@ -194,7 +199,8 @@ export default {
       statusOptions: ['published', 'draft', 'deleted'],
       temp: {
         id: undefined,
-        name: ''
+        name: '',
+        created_by: this.$store.getters.created_by
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -242,7 +248,8 @@ export default {
     resetTemp() {
       this.temp = {
         id: undefined,
-        name: ''
+        name: '',
+        created_by: this.$store.getters.created_by
       }
     },
     handleCreate() {

@@ -113,6 +113,11 @@
           <span>{{ row.total }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="Created By" align="center">
+        <template slot-scope="{ row }">
+          <span>{{ row.created_by }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="Date" align="center">
         <template slot-scope="{ row }">
           <span>{{ formatDateTime(row.date) }}</span>
@@ -277,6 +282,7 @@ export default {
         id: undefined,
         items_id: undefined,
         users_id: this.$store.getters.userID,
+        created_by: this.$store.getters.created_by,
         items_name: '',
         type: '',
         total: 0,
@@ -353,6 +359,7 @@ export default {
         id: undefined,
         items_id: undefined,
         users_id: this.$store.getters.userID,
+        created_by: this.$store.getters.created_by,
         type: '',
         total: 0,
         date: new Date()
